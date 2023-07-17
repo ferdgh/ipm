@@ -13,16 +13,43 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\IPAMController;
 
-Route::get('login', [LoginController::class, 'showLoginForm']);
-Route::post('login', [LoginController::class, 'login']);
+
+Route::group(['middleware' => 'web'], function () {
+
+	Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+	Route::post('login', [AuthController::class, 'login']);
+	Route::get('logout', [AuthController::class, 'logout']);
+
+});
+
+Route::get('/home', function () {
+    if(isset(Auth::user()->id))
+    {
+    	return redirect('/ipam');
+    }
+    return redirect('login');
+});
 
 Route::get('/', function () {
-    return view('welcome');
+    if(isset(Auth::user()->id))
+    {
+    	return redirect('ipam');
+    }
+    return redirect('login');
 });
 
 
-Route::get('/ipam', function () {
-    return view('ipam');
+Route::group(['middleware' => ['web', 'auth']], function () {
+
+	Route::get('/ipam', function () {
+	    return view('ipam');
+	});
+
+	// Route::any('/ipam-serverside', 'IPAMController@ipam_serverside');
+
+	Route::any('ipam-serverside', [IPAMController::class, 'ipam_serverside']);
+
 });
