@@ -40,7 +40,7 @@ class IPAMController extends Controller
             $data = array();
 
             $edit_btn = '<button type="button" onclick="edit_label('.$res->id.')" class="btn btn-warning rounded-pill px-3 btn-sm">Edit Label</button>';
-            $update_logs_btn = '<a href="/update-logs/'.$res->id.'" class="btn btn-info rounded-pill px-3 btn-sm">View Update Logs</a>';
+            $update_logs_btn = '<a href="/desc-logs/'.$res->id.'" class="btn btn-info rounded-pill px-3 btn-sm">View Label Logs</a>';
             $login_logs_btn = '<a href="/login-logs/'.$res->id.'" class="btn btn-secondary rounded-pill px-3 btn-sm">View Login Logs</a>';
             
             //====================
@@ -90,6 +90,61 @@ class IPAMController extends Controller
         }
 
         echo json_encode(['success'=>$success, 'msg'=>$msg]);
+    }
+
+    public function desc_logs($ip_id)
+    {
+        $ip = DB::table('ip_addresses')
+                 ->select('ip_address')
+                 ->where('id',$ip_id)
+                 ->first();
+        if(isset($ip->ip_address))
+        {
+            $data = [
+                'ip_id'=>$ip_id,
+                'ip_address'=>$ip->ip_address
+            ];
+
+            return view('desc-logs',$data);
+
+        }else{
+
+            return redirect('ipam');
+        }
+    }
+
+    public function desc_logs_serverside($ip_id)
+    {
+        $aColumns = ['d.ip_desc','d.date_updated','u.email'];
+        $sIndexColumn = 'd.id';
+        $sTable = 'ip_desc_logs d 
+                   LEFT JOIN users u ON d.updated_by=u.id 
+                  ';
+        $searchableColumns = ['d.ip_desc'];
+        $sortCondition = "d.date_updated DESC";
+        $input =& $_GET;
+
+        $whereCondition = " d.ip_id='".$ip_id."' ";
+        
+        $res = DataTables::get($input, $aColumns, $sIndexColumn, $sTable, $searchableColumns, $whereCondition, $sortCondition);
+       
+        $output = $res['output'];
+        $rResult = $res['rResult'];
+        
+        foreach ($rResult as $res) 
+        {
+            $data = array();
+
+            $data[] = $res->ip_desc;
+
+            $data[] = $res->date_updated;                     
+            
+            $data[] = $res->email;       
+            
+            $output['aaData'][] = $data;
+        }
+
+        echo json_encode($output);
     }
 
 }

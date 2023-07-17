@@ -92,16 +92,16 @@
 
 
     <div id="intro">
-      <h1 class="text-body-emphasis">IP Addresses</h1>
+      <h1 class="text-body-emphasis">IP label update logs for: <b class="text-primary">{{ $ip_address }}</b></h1>
     </div>
 
     <hr class="col-md-12 mb-5">
 
     <table id="ipDatatables" class="table table-border table-hover">
       <thead>
-        <th>IP Address</th>
         <th>Description</th>
-        <th>Actions</th>
+        <th>Date</th>
+        <th>User</th>
       </thead>
       <tbody>
       </tbody>
@@ -109,39 +109,16 @@
 
     <br>
 
-    <div class="modal fade show" id="editLabel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog" style="display: none;">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Label</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <input type="text" id="desc" class="form-control">
-          </div>
-          <div class="modal-footer">
-            <input type="hidden" id="editID" value="">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onclick="update_desc()">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </main>
 
 
 </div>
 
 
-
-
-
-
 <script type="text/javascript">
   $('document').ready(function(){
     new DataTable('#ipDatatables', {
-        ajax: '/ipam-serverside',
+        ajax: '/desc-logs-serverside/<?php echo $ip_id; ?>',
         paging: true,
         info:false,
         searching:true,
@@ -150,45 +127,6 @@
     });
   });
 
-  function clear_edit_label()
-  {
-    $('#desc').val('');
-    $('#editID').val('');
-  }
-
-  function edit_label(id)
-  {
-    var desc = $('#desc_'+id).html();
-    $('#desc').val(desc);
-    $('#editID').val(id);
-    $('#editLabel').modal('show');
-  }
-
-  function update_desc()
-  {
-     $.post('/update-desc', {
-          id : $('#editID').val(),
-          desc : $('#desc').val(),
-          _token : '<?php echo csrf_token();?>'
-      }, function (res) {
-          if (res.success) {
-
-              clear_edit_label();
-              alert('Success!');
-              update_table();
-              $('#editLabel').modal('hide');
-          }else{
-
-              alert('Error!' + res.msg);
-
-          }
-      }, 'json');
-  }
-
-  function update_table()
-  {
-    $("#ipDatatables").dataTable().fnDraw();
-  }
 </script>
 
 @endsection

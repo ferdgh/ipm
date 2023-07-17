@@ -53,4 +53,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 	Route::any('ipam-serverside', [IPAMController::class, 'ipam_serverside']);
 	Route::post('update-desc', [IPAMController::class, 'update_desc']);
 
+	Route::get('desc-logs/{ip_id}', [IPAMController::class, 'desc_logs']);
+	Route::any('desc-logs-serverside/{ip_id}', [IPAMController::class, 'desc_logs_serverside']);
+
 });
