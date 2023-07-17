@@ -56,4 +56,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 	Route::get('desc-logs/{ip_id}', [IPAMController::class, 'desc_logs']);
 	Route::any('desc-logs-serverside/{ip_id}', [IPAMController::class, 'desc_logs_serverside']);
 
+	Route::get('login-logs/{ip_id}', [IPAMController::class, 'login_logs']);
+	Route::any('login-logs-serverside/{ip_id}', [IPAMController::class, 'login_logs_serverside']);
+
 });

@@ -147,4 +147,57 @@ class IPAMController extends Controller
         echo json_encode($output);
     }
 
+    public function login_logs($ip_id)
+    {
+        $ip = DB::table('ip_addresses')
+                 ->select('ip_address')
+                 ->where('id',$ip_id)
+                 ->first();
+        if(isset($ip->ip_address))
+        {
+            $data = [
+                'ip_id'=>$ip_id,
+                'ip_address'=>$ip->ip_address
+            ];
+
+            return view('login-logs',$data);
+
+        }else{
+
+            return redirect('ipam');
+        }
+    }
+
+    public function login_logs_serverside($ip_id)
+    {
+        $aColumns = ['d.date_created','u.email'];
+        $sIndexColumn = 'd.id';
+        $sTable = 'login_logs d 
+                   LEFT JOIN users u ON d.user_id=u.id 
+                  ';
+        $searchableColumns = ['u.email'];
+        $sortCondition = "d.date_created DESC";
+        $input =& $_GET;
+
+        $whereCondition = " d.ip_id='".$ip_id."' ";
+        
+        $res = DataTables::get($input, $aColumns, $sIndexColumn, $sTable, $searchableColumns, $whereCondition, $sortCondition);
+       
+        $output = $res['output'];
+        $rResult = $res['rResult'];
+        
+        foreach ($rResult as $res) 
+        {
+            $data = array();
+
+            $data[] = $res->date_created;                     
+            
+            $data[] = $res->email;       
+            
+            $output['aaData'][] = $data;
+        }
+
+        echo json_encode($output);
+    }
+
 }
