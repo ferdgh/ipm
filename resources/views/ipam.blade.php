@@ -75,8 +75,6 @@
   }
 </style>
 
-<link href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
-
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="arrow-right-circle" viewBox="0 0 16 16">
     <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
@@ -91,6 +89,8 @@
   
 
   <main>
+
+
     <div id="intro">
       <h1 class="text-body-emphasis">IPAM</h1>
       <p class="col-md-12">
@@ -110,18 +110,35 @@
       </tbody>
     </table>
 
-
     <br>
 
-    
-
+    <div class="modal fade show" id="editLabel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Label</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="text" id="desc" class="form-control">
+          </div>
+          <div class="modal-footer">
+            <input type="hidden" id="editID" value="">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="update_desc()">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </main>
+
+
 </div>
 
-<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
 
-<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+
 
 
 <script type="text/javascript">
@@ -135,6 +152,46 @@
         serverSide: true
     });
   });
+
+  function clear_edit_label()
+  {
+    $('#desc').val('');
+    $('#editID').val('');
+  }
+
+  function edit_label(id)
+  {
+    var desc = $('#desc_'+id).html();
+    $('#desc').val(desc);
+    $('#editID').val(id);
+    $('#editLabel').modal('show');
+  }
+
+  function update_desc()
+  {
+     $.post('/update-desc', {
+          id : $('#editID').val(),
+          desc : $('#desc').val(),
+          _token : '<?php echo csrf_token();?>'
+      }, function (res) {
+          if (res.success) {
+
+              clear_edit_label();
+              alert('Success!');
+              update_table();
+              $('#editLabel').modal('hide');
+          }else{
+
+              alert('Error!' + res.msg);
+
+          }
+      }, 'json');
+  }
+
+  function update_table()
+  {
+    $("#ipDatatables").dataTable().fnDraw();
+  }
 </script>
 
 @endsection

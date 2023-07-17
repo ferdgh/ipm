@@ -24,13 +24,25 @@ class IPAM
         {
             $ip_id = $ip->id;
         }else{
+            
+            $ip_desc = gethostbyaddr($_SERVER['REMOTE_ADDR']);
             //save new IP
             $ip_id = DB::table('ip_addresses')
                      ->insertGetId([
                         'ip_address'=>$ip_address,
-                        'ip_desc'=>gethostbyaddr($_SERVER['REMOTE_ADDR']),
+                        'ip_desc'=>$ip_desc,
                         'user_id'=>Auth::user()->id
                      ]);
+
+            //log desc
+            DB::table('ip_desc_logs')
+             ->insert([
+                'ip_id'=>$ip_id,
+                'ip_desc'=>$ip_desc,
+                'date_updated'=>date('Y-m-d H:i:s'),
+                'updated_by'=>Auth::user()->id
+             ]);     
+
         }
 
         //save to login logs

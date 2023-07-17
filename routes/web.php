@@ -51,5 +51,6 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 	// Route::any('/ipam-serverside', 'IPAMController@ipam_serverside');
 
 	Route::any('ipam-serverside', [IPAMController::class, 'ipam_serverside']);
+	Route::post('update-desc', [IPAMController::class, 'update_desc']);
 
 });
