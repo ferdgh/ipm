@@ -75,6 +75,8 @@
   }
 </style>
 
+<link href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="arrow-right-circle" viewBox="0 0 16 16">
     <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
@@ -86,62 +88,53 @@
 </svg>
 
 <div class="col-lg-8 mx-auto p-4 py-md-5">
-  <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
-    <a href="/" class="d-flex align-items-center text-body-emphasis text-decoration-none">
-      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-      <span class="fs-4">IP Address Management Solution</span>
-    </a>
-  </header>
+  
 
   <main>
     <div id="intro">
       <h1 class="text-body-emphasis">IPAM</h1>
-      <p class="fs-5 col-md-12">
+      <p class="col-md-12">
         IPAM (IP Address Management) is the administration of DNS and DHCP, which are the network services that assign and resolve IP addresses to machines in a TCP/IP network. Simply put, IPAM is a means of planning, tracking, and managing the Internet Protocol address space used in a network.</p>
-      <div class="mb-5">
-        <a href="javascript:void(0)" type="button" class="btn btn-primary btn-lg px-4" onclick="proceed()">Proceed</a>
-      </div>
+
     </div>
 
-    <table class="table table-border table-hover">
+    <hr class="col-md-12 mb-5">
+
+    <table id="ipDatatables" class="table table-border table-hover">
       <thead>
         <th>IP Address</th>
         <th>Description</th>
+        <th>Actions</th>
       </thead>
       <tbody>
-        <tr>
-          <td>202.92.249.111</td>
-          <td>tesst</td>
-        </tr>
-        <tr>
-          <td>202.92.249.111</td>
-          <td>tesst</td>
-        </tr>
-        <tr>
-          <td>202.92.249.111</td>
-          <td>tesst</td>
-        </tr>
-        <tr>
-          <td>202.92.249.111</td>
-          <td>tesst</td>
-        </tr>
       </tbody>
     </table>
 
 
     <br>
 
-    <hr class="col-3 col-md-2 mb-5">
+    
 
 
   </main>
 </div>
 
+<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
+
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+
 <script type="text/javascript">
-  function proceed() 
-  {
-    alert('test');
-  }
+  $('document').ready(function(){
+    new DataTable('#ipDatatables', {
+        ajax: '/ipam-serverside',
+        paging: true,
+        info:false,
+        searching:true,
+        processing: true,
+        serverSide: true
+    });
+  });
 </script>
 
 @endsection
