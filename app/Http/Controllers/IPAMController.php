@@ -27,7 +27,7 @@ class IPAMController extends Controller
         {
 
             $ip_address = $request['ip_address'];
-            $ip_desc = $request['ip_description'];
+            $ip_desc = $request['ip_desc'];
 
             $check = DB::table('ip_addresses')
                      ->where('ip_address',$ip_address)

@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-// use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
-// use App\Models\Content;
-// use App\Models\RoleUser;
-// use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Session;
 use DB;
@@ -78,7 +74,7 @@ class AuthController extends Controller
             ]);
 
             if ($validator->fails()) {
-                Session::flash('message_danger', 'These credentials do not match our records 001.');
+                Session::flash('message_danger', 'Invalid Login #001.');
                 return back()->withInput();
             }
 
@@ -93,7 +89,7 @@ class AuthController extends Controller
 
             } else {
 
-                Session::flash('message_danger', 'Invalid Login.');
+                Session::flash('message_danger', 'Invalid Login #002');
                 return back()->withInput();
 
             }

@@ -93,6 +93,7 @@
 
     <div id="intro">
       <h1 class="text-body-emphasis">IP label update logs for: <b class="text-info">{{ $ip_address }}</b></h1>
+      <a href="/ipam" class="btn btn-default btn-sm"><< Go Back</a>
     </div>
 
     <hr class="col-md-12 mb-5">
@@ -117,14 +118,21 @@
 
 <script type="text/javascript">
   $('document').ready(function(){
-    new DataTable('#ipDatatables', {
-        ajax: '/desc-logs-serverside/<?php echo $ip_id; ?>',
-        paging: true,
-        info:false,
-        searching:true,
-        processing: true,
-        serverSide: true
-    });
+
+    var table = $('#ipDatatables').DataTable( {
+                  paging: true,
+                  info:true,
+                  searching:true,
+                  bProcessing: true,
+                  bServerSide: true,
+                  sAjaxSource: '/desc-logs-serverside/<?php echo $ip_id; ?>',
+                  aoColumns: [
+                    null,
+                    null,
+                    null
+                  ]
+                });
+
   });
 
 </script>

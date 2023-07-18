@@ -10,8 +10,9 @@
   <center>
   <form action="" method="POST">
   	<input type="hidden" name="_token" value="{{ csrf_token() }}">
-    <img class="mb-4" src="/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
-    <h1 class="h3 mb-3 fw-normal">Please log in</h1>
+    <h3 class="text-primary">IP Address Management Solution</h3>
+    <br>
+    <h5 class="h3 mb-3 fw-normal text-left">Please log in</h5>
 
     @if(Session::has('message_danger'))
       <div class="alert alert-danger alert-dismissible fade show" role="alert">

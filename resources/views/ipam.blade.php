@@ -171,14 +171,20 @@
 
 <script type="text/javascript">
   $('document').ready(function(){
-    new DataTable('#ipDatatables', {
-        ajax: '/ipam-serverside',
-        paging: true,
-        info:false,
-        searching:true,
-        processing: true,
-        serverSide: true
-    });
+
+    var table = $('#ipDatatables').DataTable( {
+                  paging: true,
+                  info:true,
+                  searching:true,
+                  bProcessing: true,
+                  bServerSide: true,
+                  sAjaxSource: "/ipam-serverside",
+                  aoColumns: [
+                    null,
+                    null,
+                    { "bSortable": false }
+                  ]
+                });
 
   });
 

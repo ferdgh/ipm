@@ -4,6 +4,7 @@
    @include('layouts.partials.head')
  </head>
  <body>
+
 <!-- @include('layouts.partials.nav') -->
 @include('layouts.partials.header')
 
