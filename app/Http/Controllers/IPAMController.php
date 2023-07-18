@@ -19,6 +19,63 @@ class IPAMController extends Controller
 
     }
 
+    public function add_ip(Request $request)
+    {
+        $success = false;
+
+        if(isset(Auth::user()->id))
+        {
+
+            $ip_address = $request['ip_address'];
+            $ip_desc = $request['ip_description'];
+
+            $check = DB::table('ip_addresses')
+                     ->where('ip_address',$ip_address)
+                     ->where('user_id',Auth::user()->id)
+                     ->count();
+            if($check==0)
+            {
+                //add
+                $ip_id = DB::table('ip_addresses')
+                        ->insertGetId([
+                            'ip_address'=>$ip_address,
+                            'ip_desc'=>$ip_desc,
+                            'user_id'=>Auth::user()->id
+                        ]);
+
+                if($ip_id>0)
+                {
+                    if($ip_desc!='')
+                    {
+                        //log
+                        DB::table('ip_desc_logs')
+                        ->insert([
+                            'ip_id'=>$ip_id,
+                            'ip_desc'=>$ip_desc,
+                            'date_updated'=>date('Y-m-d H:i:s'),
+                            'updated_by'=>Auth::user()->id
+                        ]);
+                    }
+
+                    $success = true;
+                    $msg = 'Success!';
+
+                }else{
+                    $msg = 'IP address not saved!';
+                }
+
+            }else{
+                $msg = 'IP address already added!';
+            }
+
+        }else{
+            
+            $msg = "Unauthenticated!";
+        }
+
+        echo json_encode(['success'=>$success, 'msg'=>$msg]);
+    }
+
     public function ipam_serverside()
     {
         $aColumns = ['ip_address','ip_desc','id'];
@@ -28,7 +85,7 @@ class IPAMController extends Controller
         $sortCondition = "ip_address ASC";
         $input =& $_GET;
 
-        $whereCondition = " user_id='".Auth::user()->id."' ";
+        $whereCondition = '';//" user_id='".Auth::user()->id."' ";
         
         $res = DataTables::get($input, $aColumns, $sIndexColumn, $sTable, $searchableColumns, $whereCondition, $sortCondition);
        
@@ -41,7 +98,7 @@ class IPAMController extends Controller
 
             $edit_btn = '<button type="button" onclick="edit_label('.$res->id.')" class="btn btn-warning rounded-pill px-3 btn-sm">Edit Label</button>';
             $update_logs_btn = '<a href="/desc-logs/'.$res->id.'" class="btn btn-info rounded-pill px-3 btn-sm">View Label Logs</a>';
-            $login_logs_btn = '<a href="/login-logs/'.$res->id.'" class="btn btn-secondary rounded-pill px-3 btn-sm">View Login Logs</a>';
+            $login_logs_btn = '<a href="/login-logs/'.$res->id.'" class="btn btn-success rounded-pill px-3 btn-sm">View Login Logs</a>';
             
             //====================
 

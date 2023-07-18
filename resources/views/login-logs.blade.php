@@ -92,7 +92,7 @@
 
 
     <div id="intro">
-      <h1 class="text-body-emphasis">Login logs for: <b class="text-warning">{{ $ip_address }}</b></h1>
+      <h1 class="text-body-emphasis">Login logs for: <b class="text-success">{{ $ip_address }}</b></h1>
     </div>
 
     <hr class="col-md-12 mb-5">

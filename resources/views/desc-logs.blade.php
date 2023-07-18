@@ -92,7 +92,7 @@
 
 
     <div id="intro">
-      <h1 class="text-body-emphasis">IP label update logs for: <b class="text-primary">{{ $ip_address }}</b></h1>
+      <h1 class="text-body-emphasis">IP label update logs for: <b class="text-info">{{ $ip_address }}</b></h1>
     </div>
 
     <hr class="col-md-12 mb-5">
@@ -101,7 +101,7 @@
       <thead>
         <th>Description</th>
         <th>Date</th>
-        <th>User</th>
+        <th>Updated By</th>
       </thead>
       <tbody>
       </tbody>

@@ -48,7 +48,7 @@ Route::group(['middleware' => ['web', 'auth']], function () {
 	    return view('ipam');
 	});
 
-	// Route::any('/ipam-serverside', 'IPAMController@ipam_serverside');
+	Route::post('add-ip', [IPAMController::class, 'add_ip']);
 
 	Route::any('ipam-serverside', [IPAMController::class, 'ipam_serverside']);
 	Route::post('update-desc', [IPAMController::class, 'update_desc']);

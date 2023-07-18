@@ -73,6 +73,12 @@
   .bd-mode-toggle {
     z-index: 1500;
   }
+
+  #ip_address{
+    letter-spacing: 5px;
+    font-weight: bold;
+    font-size: x-large
+  }
 </style>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -93,6 +99,7 @@
 
     <div id="intro">
       <h1 class="text-body-emphasis">IP Addresses</h1>
+      <button type="button" onclick="show_add()" class="btn btn-primary rounded-pill px-3 btn-md"> Add IP Address</button>
     </div>
 
     <hr class="col-md-12 mb-5">
@@ -108,6 +115,34 @@
     </table>
 
     <br>
+
+    <div class="modal fade show" id="addIP" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Add IP Address</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="addForm">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="ip_address" placeholder="255.255.255.255" maxlength="15" onkeyup="check_IP()">
+                <label for="ip_address">IP Address</label>
+              </div>
+              <div class="form-floating">
+                <input type="text" class="form-control" id="ip_desc" placeholder="">
+                <label for="ip_desc">Description</label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="add_IP()">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <div class="modal fade show" id="editLabel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog" style="display: none;">
       <div class="modal-dialog">
@@ -134,10 +169,6 @@
 </div>
 
 
-
-
-
-
 <script type="text/javascript">
   $('document').ready(function(){
     new DataTable('#ipDatatables', {
@@ -148,7 +179,60 @@
         processing: true,
         serverSide: true
     });
+
   });
+
+  function add_IP()
+  {
+    if(check_IP())
+    {
+      $.post('/add-ip', {
+          ip_address : $('#ip_address').val(),
+          ip_desc : $('#ip_desc').val(),
+          _token : '<?php echo csrf_token();?>'
+      }, function (res) {
+          if (res.success) {
+
+              alert('Success!');
+              update_table();
+              $('#addIP').modal('hide');
+
+          }else{
+
+              alert('Error! ' + res.msg);
+          }
+      }, 'json');
+    }else{
+      alert('IP is INAVALID!')
+    }
+  }
+
+  function check_IP()
+  {
+      var ipaddress =
+        /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
+      var content = $("#ip_address").val();
+
+      if (ipaddress.test(content)) {
+        $("#ip_address").addClass('is-valid').removeClass('is-invalid');
+        return true;
+      } else {
+        $("#ip_address").addClass('is-invalid').removeClass('is-valid');
+        return false;
+      }
+  }
+
+  function show_add()
+  {
+    clear_add();
+    $('#addIP').modal('show');
+  }
+
+  function clear_add()
+  {
+    $('#ip_address').val('');
+    $('#ip_desc').val('');
+  }
 
   function clear_edit_label()
   {
@@ -179,7 +263,7 @@
               $('#editLabel').modal('hide');
           }else{
 
-              alert('Error!' + res.msg);
+              alert('Error! ' + res.msg);
 
           }
       }, 'json');
